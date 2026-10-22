@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#3b2a1a">
+<title>Ağaç Türleri Flashcard Quiz</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="description" content="Ağaç türlerini fotoğraflardan 5-10 dakikada öğren: flashcard quiz ve Codex.">
+<style>
+  .by-credit {
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--mute);
+  margin-top: 20px;
+  padding-right: 4px;
+  opacity: 0.7;
+  font-style: italic;
+}
+
+.by-credit b {
+  color: var(--brown);
+  font-style: normal;
+}
+:root{--bg:#f3ead9;--card:#fffaf0;--ink:#3b2a1a;--mute:#7a6650;--line:#dcc9a8;--brown:#7b4a22;--green:#2f6b3a;--gbg:#d9efd9;--red:#b3392b;--rbg:#f7d9d4;--shadow:rgba(59,42,26,.25);
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1710;--card:#2c2218;--ink:#f1e5cf;--mute:#b9a583;--line:#4a3a28;--brown:#c98a4b;--green:#7fcf8a;--gbg:#1f3a25;--red:#f08070;--rbg:#4a231e;--shadow:rgba(0,0,0,.5)}}
+:root[data-theme="dark"]{--bg:#1d1710;--card:#2c2218;--ink:#f1e5cf;--mute:#b9a583;--line:#4a3a28;--brown:#c98a4b;--green:#7fcf8a;--gbg:#1f3a25;--red:#f08070;--rbg:#4a231e;--shadow:rgba(0,0,0,.5)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;justify-content:center}
+#app{width:100%;max-width:480px;padding:14px 14px 24px}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:1.7rem;margin:.4em 0 .2em;text-align:center}
+.sub{text-align:center;color:var(--mute);margin:0 0 20px}
+.hide{display:none!important}
+.btn{font:inherit;font-weight:600;border:0;border-radius:12px;padding:14px 16px;cursor:pointer;background:var(--brown);color:#fff;width:100%;transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.lv{display:flex;flex-direction:column;gap:12px}
+.lv .btn{text-align:left;display:flex;justify-content:space-between;align-items:center;padding:18px}
+.lv small{font-weight:400;opacity:.85}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;text-align:center;padding:6px 2px;font-size:.72rem;color:var(--mute)}
+.stat b{display:block;font-size:1.15rem;color:var(--ink)}
+.stat.g b{color:var(--green)}.stat.r b{color:var(--red)}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:16px}
+.bar i{display:block;height:100%;width:0;background:var(--brown);transition:width .3s}
+.deck{position:relative;padding-bottom:10px}
+.deck:before,.deck:after{content:"";position:absolute;left:10px;right:10px;top:8px;bottom:0;background:var(--card);border:1px solid var(--line);border-radius:18px;z-index:0}
+.deck:after{left:20px;right:20px;top:16px;bottom:-8px;opacity:.7}
+.card{position:relative;z-index:1;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 24px var(--shadow);padding:12px;animation:in .35s ease}
+.card.out{animation:out .25s ease forwards}
+.card.wait{opacity:0;animation:none}
+@keyframes in{from{opacity:0;transform:translateX(60px) rotate(3deg)}to{opacity:1;transform:none}}
+@keyframes out{to{opacity:0;transform:translateX(-60px) rotate(-3deg)}}
+.photo{width:100%;height:auto;max-height:46vh;object-fit:contain;border-radius:12px;display:block;background:var(--line)}
+.q{text-align:center;font-weight:600;margin:12px 0 10px}
+.opts{display:grid;gap:8px}
+.opt{font:inherit;text-align:left;padding:13px 14px;border-radius:11px;border:2px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.opt:disabled{cursor:default}
+.opt.ok{background:var(--gbg);border-color:var(--green);color:var(--green);font-weight:700}
+.opt.no{background:var(--rbg);border-color:var(--red);color:var(--red);font-weight:700}
+.row{display:flex;gap:8px}
+input{font:inherit;flex:1;min-width:0;padding:13px 14px;border-radius:11px;border:2px solid var(--line);background:transparent;color:var(--ink)}
+input.ok{border-color:var(--green);background:var(--gbg)}input.no{border-color:var(--red);background:var(--rbg)}
+.row .btn{width:auto}
+.fb{margin:10px 0 0;padding:10px;border-radius:10px;background:var(--bg);font-size:.9rem;text-align:center}
+.fb b{color:var(--green)}
+.acts{display:flex;gap:8px;margin-top:12px}
+.acts .btn{flex:1}
+.modal{position:fixed;inset:0;background:rgba(20,12,4,.6);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9}
+.res{background:var(--card);border-radius:20px;padding:24px;width:100%;max-width:400px;text-align:center;animation:in .4s}
+.pct{font-family:Georgia,serif;font-size:3.4rem;color:var(--brown);margin:4px 0}
+.res .stats{margin:14px 0 18px;grid-template-columns:repeat(3,1fr)}
+.res .btn{margin-top:8px}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 14px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:5px}
+.mode{font:inherit;font-size:.85rem;font-weight:600;border:0;border-radius:10px;padding:10px 4px;background:transparent;color:var(--mute);cursor:pointer;line-height:1.2}
+.mode small{display:block;font-weight:400;font-size:.7rem;opacity:.85;margin-top:2px}
+.mode.on{background:var(--brown);color:#fff}
+.lbl{font-size:.8rem;color:var(--mute);margin:0 0 6px 4px;font-weight:600}
+#end{margin-top:14px}
+.played{color:var(--mute);margin:-6px 0 4px}
+.codex{margin-top:6px}
+.codex h2{margin-top:10px!important}
+.codex h2{font-family:Georgia,"Times New Roman",serif;font-size:1.3rem;margin:0 0 2px;text-align:center}
+.codex .sub{margin-bottom:12px;font-size:.85rem}
+.cx{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.cxi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:7px;display:flex;flex-direction:column}
+.cxi img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:9px;display:block;background:var(--line);cursor:zoom-in}
+.cxi b{display:block;margin:7px 2px 1px;font-size:.95rem}
+.cxi i{display:block;margin:0 2px;font-size:.72rem;color:var(--mute)}
+.cxi p{margin:6px 2px 2px;font-size:.76rem;line-height:1.35;padding-top:6px;border-top:1px dashed var(--line)}
+.zoom{flex-direction:column;cursor:zoom-out}
+.zoom img{max-width:100%;max-height:78vh;border-radius:12px;object-fit:contain}
+.zoom div{color:#fff;margin-top:10px;font-weight:600;text-align:center}
+.hint{color:var(--mute);font-size:.75rem;text-align:center;margin-top:14px}
+
+.cxi.multi{grid-column:1/-1}
+.cxi .head{margin:2px 2px 6px}
+.cxi .head b{margin:0 0 1px}
+.cxi>div{width:100%}.cxi figure{width:100%;min-width:0;margin:0}
+.gal{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.gal figure{margin:0}
+.cxi figcaption{margin:5px 2px 0;font-size:.72rem;font-weight:600;color:var(--ink);line-height:1.25}
+.cxi figcaption em{font-style:normal;color:var(--brown)}
+.cxi p b{display:inline;margin:0;font-size:inherit;color:var(--brown)}
+.fb .inf{color:var(--mute);margin-top:2px}
+.fb .cutl{margin-top:6px;font-size:.8rem;color:var(--mute)}
+.fb .cutl b{color:var(--brown)}
+.fb .dist{margin-top:8px;padding:8px 10px;border-radius:9px;background:var(--card);border:1px dashed var(--line);text-align:left;font-size:.85rem;line-height:1.4}
+.fb .dist b{display:block;color:var(--brown);margin-bottom:2px}
+</style>
+</head>
+<body>
+<div id="app">
+ <section id="start">
+  <h1>🪵 Ağaç Türleri Quiz</h1>
+  <p class="sub" id="sub">Her oyunda rastgele 10 kart. Zorluk seç ve başla.</p>
+  <div class="lbl">Mod</div>
+  <div class="modes">
+   <button class="mode on" data-mode="std">Klasik<small>10 kart</small></button>
+   <button class="mode" data-mode="all">Tüm Kartlar<small id="allN">23 resim</small></button>
+   <button class="mode" data-mode="inf">Sınırsız<small>sen bitirene kadar</small></button>
+  </div>
+  <div class="lbl">Zorluk</div>
+  <div class="lv">
+   <button class="btn" data-lv="easy">Kolay <small>3 şık</small></button>
+   <button class="btn" data-lv="mid">Orta <small>4 şık</small></button>
+   <button class="btn" data-lv="hard">Zor <small>Cevabı kendin yaz</small></button>
+  </div>
+  <button class="btn ghost" id="cxOpen" style="margin-top:14px">📖 Codex <small style="font-weight:400;opacity:.8">· türleri öğren</small></button>
+ </section>
+ <section id="codex" class="codex hide">
+  <button class="btn ghost" id="cxBack" style="width:auto;padding:8px 14px">← Geri</button>
+  <h2>📖 Codex</h2>
+  <p class="sub">Her tür tek kartta; görseller kesim yönüyle etiketli. Büyütmek için fotoğrafa dokun.</p>
+  <div class="cx" id="cx"></div>
+ </section>
+ <footer class="by-credit">
+  Vibe coded by <b>Mehmet B. Karakoç</b>
+</footer>
+ <section id="game" class="hide">
+  <div class="stats">
+   <div class="stat">Kart<b id="sK">1/10</b></div>
+   <div class="stat g">Doğru<b id="sD">0</b></div>
+   <div class="stat r">Yanlış<b id="sY">0</b></div>
+   <div class="stat">Pas<b id="sP">0</b></div>
+  </div>
+  <div class="bar"><i id="pb"></i></div>
+  <div class="deck"><div class="card" id="card">
+   <img class="photo" id="img" alt="Ağaç türü fotoğrafı">
+   <div class="q">Bu hangi ağaç türü?</div>
+   <div id="ans"></div>
+   <div class="fb hide" id="fb"></div>
+   <div class="acts"><button class="btn ghost" id="pas">Pas ⏭</button><button class="btn hide" id="nxt">Sıradaki Kart →</button></div>
+  </div></div>
+  <button class="btn ghost hide" id="end">Sessionu Bitir 🏁</button>
+ </section>
+</div>
+<div class="modal hide" id="modal"><div class="res">
+ <h1>Sonuç</h1><div class="pct" id="pct">%0</div><p class="played" id="played"></p>
+ <div class="stats"><div class="stat g">Doğru<b id="rD">0</b></div><div class="stat r">Yanlış<b id="rY">0</b></div><div class="stat">Pas<b id="rP">0</b></div></div>
+ <button class="btn" id="again">Yeniden Oyna</button>
+ <button class="btn ghost" id="chg">Mod / Zorluk Değiştir</button>
+</div></div>
+<div class="modal zoom hide" id="zoom"><img id="zImg" alt=""><div id="zCap"></div></div>
+<script>
+// ===== VERİ: her ağaç TEK kayıt. Aynı türün farklı görselleri "images" dizisinde gruplanır. =====
+// cut (kesim yönü) yalnızca: "Teğet" | "Radyal" | "Enine"
+// alt: Zor modda kabul edilecek diğer yazımlar. info: bilimsel ad · köken. distinguish: nasıl ayırt edilir.
+const CUTS={"Teğet":"Flat Sawn / Tangential","Radyal":"Quarter Sawn / Radial","Enine":"Cross Section / End Grain"};
+const trees=[
+{id:"afrormosia",name:"Afrormosia",alt:["Tik Ağacı","Gold Teak","Afromosia"],info:"Pericopsis elata",
+ distinguish:"Altın-kahve tik rengi, zamanla koyulaşır. İnce ve düzgün doku, hafif şeritli desen; tik ağacına benzer ama daha az yağlı görünür.",
+ images:[{src:"img/01.jpg",cut:"Radyal"}]},
+{id:"akcaagac",name:"Akçaağaç",alt:["Maple"],info:"Acer pseudoplatanus · Rusya",
+ distinguish:"Çok açık krem-beyaz renk. Doku çok ince ve sık, gözenekler neredeyse görünmez; desen sakin ve düzdür.",
+ images:[{src:"img/02.jpg",cut:"Teğet"}]},
+{id:"bubinga",name:"Bubinga",alt:["Gül","Gül Ağacı"],info:"Guibourtia demeusei · Batı Afrika",
+ distinguish:"Pembe-kırmızımsı kahve zemin üzerinde koyu mor çizgiler. Teğet kesimde sık sık dalgalı/alevli (figürlü) desen görülür.",
+ images:[{src:"img/03.jpg",cut:"Radyal"},{src:"img/14.jpg",cut:"Teğet"}]},
+{id:"kavak-koku",name:"Kavak Kökü",alt:["Poplar Burl","Kavak"],info:"Poplar burl · Türkiye",
+ distinguish:"Düz damar yok! Girdap gibi dönen, göz göz düğümlü kök deseni; açık krem-bal rengi.",
+ images:[{src:"img/04.jpg",cut:"Teğet"}]},
+{id:"venge",name:"Venge",alt:["Wenge"],info:"Millettia laurentii",
+ distinguish:"Neredeyse siyah koyu kahve, belirgin açık-koyu ince çizgiler. Kaba doku, gözle görülen iri gözenekler.",
+ images:[{src:"img/05.jpg",cut:"Radyal"}]},
+{id:"turk-cevizi",name:"Türk Cevizi",alt:["Ceviz","Turkish Walnut"],info:"Juglans regia · Türkiye",
+ distinguish:"Kahve zemin üzerinde dalgalı, bulut gibi koyu damarlar; gri, mor ve bal tonları karışık. Beyaz cevizde açık renkli diri odun bantları olur.",
+ images:[{src:"img/06.jpg",cut:"Radyal"},{src:"img/17.jpg",cut:"Teğet"}]},
+{id:"sapelli",name:"Sapelli",alt:["Sapelle"],info:"Entandrophragma cylindricum · Orta/Batı Afrika",
+ distinguish:"Kırmızımsı maun kahvesi. Radyal (rift) kesimde düzenli şeritler ışık açısıyla açık-koyu yanıp söner (ribbon efekt).",
+ images:[{src:"img/07.jpg",cut:"Radyal"}]},
+{id:"kestane",name:"Kestane",alt:["Chestnut"],info:"Castanea sativa · Amerika",
+ distinguish:"Meşeye çok benzer belirgin yıllık halkalar, ama meşedeki parlak öz ışını lekeleri yoktur. Açık-orta kahve.",
+ images:[{src:"img/08.jpg",cut:"Radyal"}]},
+{id:"karacam",name:"Karaçam",alt:["Çam","Pine"],info:"Pinus nigra · Rusya",
+ distinguish:"Sarımsı-kırmızımsı renk, bahar/yaz odunu arasında güçlü çizgi kontrastı. Budaklar ve reçineli görünüm tipiktir.",
+ images:[{src:"img/09.jpg",cut:"Teğet"}]},
+{id:"limba",name:"Limba",alt:["Frake","Afara"],info:"Terminalia superba · Batı/Orta Afrika",
+ distinguish:"Açık sarımsı bej, bazen gri-kahve koyu damarlı. Orta-kaba doku, çoğunlukla düz damar.",
+ images:[{src:"img/10.jpg",cut:"Radyal"}]},
+{id:"amerikan-kirazi",name:"Amerikan Kirazı",alt:["American Black Cherry","Kiraz"],info:"Prunus serotina · Kuzey Amerika",
+ distinguish:"Pembe-kırmızımsı kahve, ince ve düzgün doku. Küçük koyu öz lekeleri görülebilir; zamanla koyulaşır.",
+ images:[{src:"img/11.jpg",cut:"Teğet"}]},
+{id:"kayin",name:"Kayın",alt:["Beech"],info:"Fagus orientalis · Rusya",
+ distinguish:"Açık pembe-bej (buharlanmış kayın daha pembe). Yüzeyde her yere dağılmış küçük koyu kısa çizgiler (öz ışınları) en net işaretidir.",
+ images:[{src:"img/12.jpg",cut:"Teğet"},{src:"img/16.jpg",cut:"Radyal"}]},
+{id:"beyaz-mese",name:"Beyaz Meşe",alt:["Meşe","White Oak"],info:"Quercus sessiliflora · Rusya",
+ distinguish:"Açık bal-bej renk, belirgin halka gözenekleri. Radyal kesimde parlak, geniş öz ışını lekeleri (hare) olur.",
+ images:[{src:"img/13.jpg",cut:"Teğet"},{src:"img/22.jpg",cut:"Radyal"}]},
+{id:"akasya",name:"Akasya",alt:["Acacia","Robinia"],info:"Robinia pseudoacacia · Avrupa",
+ distinguish:"Sarımsı-yeşilimsi kahve, belirgin katedral (V şeklinde) damarlar. Zamanla altın kahveye döner.",
+ images:[{src:"img/15.jpg",cut:"Teğet"}]},
+{id:"eyong",name:"Eyong",alt:[],info:"Eribroma oblonga · Orta Afrika",
+ distinguish:"Açık somon-pembemsi kahve, sade ve düz/hafif şeritli damar, orta doku. Belirgin bir figür yoktur.",
+ images:[{src:"img/18.jpg",cut:"Teğet"}]},
+{id:"zebrano",name:"Zebrano",alt:["Zingana","Zebra"],info:"Microberlinia brazzavillensis · Afrika",
+ distinguish:"Açık krem zemin üzerinde koyu kahve paralel çizgiler — tam bir zebra deseni, karıştırması zor.",
+ images:[{src:"img/19.jpg",cut:"Radyal"}]},
+{id:"kirmizi-mese",name:"Kırmızı Meşe",alt:["Kırmızı Amerikan Meşesi","American Red Oak","Amerikan Meşesi"],info:"Quercus rubra · Kuzey Amerika",
+ distinguish:"Beyaz meşeye benzer ama pembe-kırmızımsı tondadır. Öz ışını lekeleri daha kısa ve daha az belirgindir.",
+ images:[{src:"img/20.jpg",cut:"Radyal"}]},
+{id:"padauk",name:"Padauk",alt:["Camwood"],info:"Pterocarpus soyauxii · Afrika",
+ distinguish:"Canlı turuncu-kırmızı renk; bu kadar kırmızı başka tür yok. Zamanla kahverengiye döner.",
+ images:[{src:"img/21.jpg",cut:"Radyal"}]},
+{id:"beyaz-disbudak",name:"Beyaz Dişbudak",alt:["Dişbudak","White Ash","Ash"],info:"Fraxinus · Rusya",
+ distinguish:"Açık krem-beyaz, meşe gibi belirgin katedral halkalar ama hare/öz ışını lekeleri yoktur. Akçaağaçtan çok daha belirgin damarlı.",
+ images:[{src:"img/23.jpg",cut:"Radyal"}]}
+];
+// Başlık formatı: çoklu görselde "[Ağaç Adı] - [İndeks] - [Kesim Yönü]", tek görselde "[Ağaç Adı] - [Kesim Yönü]"
+const capOf=(t,i)=>t.images.length>1?t.name+" - "+(i+1)+" - "+t.images[i].cut:t.name+" - "+t.images[i].cut;
+// Oyun kartları: her görsel bir kart (aynı ağacın görselleri aynı ağaç verisini paylaşır)
+const woodData=trees.flatMap(t=>t.images.map((im,i)=>({name:t.name,alt:t.alt,info:t.info,distinguish:t.distinguish,image:im.src,cut:im.cut,caption:capOf(t,i)})));
+// Veri doğrulama: yinelenen ağaç adı ve geçersiz kesim yönü olmasın
+(()=>{const seen=new Set();trees.forEach(t=>{if(seen.has(t.name))console.error("DUPLICATE ağaç:",t.name);seen.add(t.name);t.images.forEach(im=>{if(!(im.cut in CUTS))console.error("Geçersiz kesim yönü:",t.name,im.cut)})})})();
+const DECK_SIZE=10, $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const norm=s=>s.toLocaleLowerCase("tr").replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ş/g,"s").replace(/ü/g,"u").replace(/[^a-z0-9]/g,"");
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+// Modlar: std = rastgele 10 kart, all = tüm resimler karışık sırada, inf = kullanıcı bitirene kadar sınırsız
+let S,renderTok=0,mode="std";
+const SUBS={std:"Her oyunda rastgele "+DECK_SIZE+" kart. Zorluk seç ve başla.",all:"Tüm "+woodData.length+" resim, her seferinde karışık sırada. Hepsini bilmeye çalış!",inf:"Kartlar bitmez — istediğin zaman \"Sessionu Bitir\" ile sonucu gör."};
+const preload=cards=>cards.forEach(c=>{new Image().src=c.image});
+function start(lv){S={lv,mode,deck:mode==="std"?shuffle(woodData).slice(0,DECK_SIZE):shuffle(woodData),i:0,d:0,y:0,p:0,done:false,ended:false};preload(S.deck);$("end").classList.toggle("hide",mode==="std");$("start").classList.add("hide");$("modal").classList.add("hide");$("game").classList.remove("hide");render()}
+// Sınırsız modda deste bitince yeni karışık tur ekle (art arda aynı resim gelmesin)
+function refill(){if(S.mode!=="inf"||S.i<S.deck.length-1)return;let more=shuffle(woodData);if(more[0]===S.deck[S.deck.length-1])more.push(more.shift());S.deck.push(...more);preload(more)}
+function stats(){const n=S.deck.length;$("sK").textContent=S.mode==="inf"?String(S.i+1):Math.min(S.i+1,n)+"/"+n;$("sD").textContent=S.d;$("sY").textContent=S.y;$("sP").textContent=S.p;$("pb").style.width=S.mode==="inf"?"0":(S.i/n*100)+"%"}
+function render(){
+ refill();const c=S.deck[S.i];S.done=false;stats();
+ const card=$("card"),img=$("img"),tok=++renderTok;card.classList.add("wait");
+ img.src=c.image;
+ const show=()=>{if(renderTok!==tok)return;card.classList.remove("out","wait");card.style.animation="none";void card.offsetWidth;card.style.animation=""};
+ (img.decode?img.decode():Promise.resolve()).then(show,show);
+ $("fb").classList.add("hide");$("nxt").classList.add("hide");delete $("nxt").dataset.clicked;$("pas").classList.remove("hide");
+ const ans=$("ans");ans.innerHTML="";
+ if(S.lv==="hard"){
+  ans.innerHTML='<div class="row"><input id="inp" type="text" placeholder="Ağacın adını yaz…" autocomplete="off" autocapitalize="none" spellcheck="false"><button class="btn" id="chk">Kontrol Et</button></div>';
+  $("chk").onclick=check;$("inp").onkeydown=e=>{if(e.key==="Enter"&&!S.done){e.stopPropagation();check()}};
+ }else{
+  const n=S.lv==="easy"?3:4;
+  const others=shuffle(trees.map(t=>t.name).filter(x=>x!==c.name)).slice(0,n-1);
+  const wrap=document.createElement("div");wrap.className="opts";
+  shuffle([c.name,...others]).forEach((t,k)=>{const b=document.createElement("button");b.className="opt";b.textContent=(k+1)+". "+t;b.dataset.v=t;b.onclick=()=>pick(b);wrap.appendChild(b)});
+  ans.appendChild(wrap);
+ }
+}
+// Cevap sonrası: doğru cevap + kesim yönü + "Nasıl ayırt edilir?" (doğru da yanlış da olsa gösterilir)
+function reveal(ok,c){
+ S.done=true;$("pas").classList.add("hide");
+ const fb=$("fb");fb.classList.remove("hide");
+ fb.innerHTML=(ok?"✅ Doğru!<br>":"❌ ")+"Doğru cevap: <b>"+esc(c.name)+"</b>"
+  +'<div class="inf">'+esc(c.info)+"</div>"
+  +'<div class="cutl">Kesim yönü: <b>'+esc(c.cut)+"</b> ("+esc(CUTS[c.cut])+")</div>"
+  +'<div class="dist"><b>🔍 Nasıl ayırt edilir?</b>'+esc(c.distinguish)+"</div>";
+ $("nxt").classList.remove("hide");$("nxt").textContent=S.mode!=="inf"&&S.i>=S.deck.length-1?"Sonucu Gör 🏁":"Sıradaki Kart →";
+}
+function pick(b){
+ if(S.done)return;const c=S.deck[S.i],ok=b.dataset.v===c.name;
+ document.querySelectorAll(".opt").forEach(o=>{o.disabled=true;if(o.dataset.v===c.name)o.classList.add("ok")});
+ if(ok)S.d++;else{S.y++;b.classList.add("no")}
+ stats();reveal(ok,c);
+}
+function check(){
+ if(S.done)return;const c=S.deck[S.i],inp=$("inp"),v=norm(inp.value);if(!v){inp.focus();return}
+ const ok=[c.name,...c.alt].some(x=>norm(x)===v);
+ inp.readOnly=true;$("chk").disabled=true;inp.classList.add(ok?"ok":"no");
+ if(ok)S.d++;else S.y++;stats();reveal(ok,c);
+}
+function next(){
+ if(S.i===S.deckNext)return;S.deckNext=S.i;
+ $("card").classList.add("out");
+ setTimeout(()=>{if(S.ended)return;S.i++;if(S.i>=S.deck.length)finish();else render()},230);
+}
+function pas(){if(S.done)return;S.p++;S.deckNext=S.i;$("card").classList.add("out");setTimeout(()=>{if(S.ended)return;S.i++;S.i>=S.deck.length?finish():render()},230)}
+function finish(){
+ if(S.ended)return;S.ended=true;stats();
+ const n=S.d+S.y+S.p;
+ $("pct").textContent="%"+(n?Math.round(S.d/n*100):0);
+ $("played").textContent=n+(S.mode==="all"?" / "+S.deck.length:"")+" kart oynandı";$("rD").textContent=S.d;$("rY").textContent=S.y;$("rP").textContent=S.p;
+ $("modal").classList.remove("hide");
+}
+// ===== Codex: her ağaç tek kart, görseller "Görseller / Kesim Örnekleri" olarak kart altında =====
+$("cx").innerHTML=trees.map(t=>{
+ const multi=t.images.length>1;
+ const figs=t.images.map((im,i)=>'<figure><img loading="lazy" src="'+esc(im.src)+'" alt="'+esc(capOf(t,i))+'" data-t="'+esc(t.id)+'" data-i="'+i+'"><figcaption>'+esc(t.name+(multi?" - "+(i+1):""))+' - <em>'+esc(im.cut)+'</em></figcaption></figure>').join("");
+ return '<div class="cxi'+(multi?" multi":"")+'"><div class="head"><b>'+esc(t.name)+'</b><i>'+esc(t.info)+'</i></div>'
+  +'<div class="'+(multi?"gal":"")+'">'+figs+'</div>'
+  +'<p><b>🔍 Nasıl ayırt edilir?</b> '+esc(t.distinguish)+'</p></div>';
+}).join("");
+$("cx").onclick=e=>{const d=e.target.dataset;if(!d||d.t===undefined)return;const t=trees.find(x=>x.id===d.t),i=+d.i;$("zImg").src=t.images[i].src;$("zImg").alt=capOf(t,i);$("zCap").textContent=capOf(t,i)+" · "+t.info;$("zoom").classList.remove("hide")};
+$("cxOpen").onclick=()=>{$("start").classList.add("hide");$("codex").classList.remove("hide");scrollTo(0,0)};
+$("cxBack").onclick=()=>{$("codex").classList.add("hide");$("start").classList.remove("hide");scrollTo(0,0)};
+$("zoom").onclick=()=>$("zoom").classList.add("hide");
+$("allN").textContent=woodData.length+" resim";
+document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{mode=b.dataset.mode;document.querySelectorAll("[data-mode]").forEach(x=>x.classList.toggle("on",x===b));$("sub").textContent=SUBS[mode]});
+$("end").onclick=()=>finish();
+document.querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>start(b.dataset.lv));
+$("pas").onclick=pas;$("nxt").onclick=()=>{$("nxt").dataset.clicked=1;next()};
+$("again").onclick=()=>{mode=S.mode;start(S.lv)};
+$("chg").onclick=()=>{$("modal").classList.add("hide");$("game").classList.add("hide");$("start").classList.remove("hide")};
+// Offline / uygulama olarak çalışma (PWA)
+if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}));
+</script>
+</body>
+</html>
